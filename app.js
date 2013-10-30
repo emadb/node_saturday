@@ -3,8 +3,9 @@ var sql = require('msnodesql');
 var connectionString = "Driver={SQL Server Native Client 11.0};Server=127.0.0.1;Database=SaturdayDb;Uid=sa;Pwd=CodicePlastico";;
 
 //stream();
-//queryRaw();
-query();
+queryRaw();
+//query();
+
 
 function stream(){
 	var stmt = sql.query(connectionString, "SELECT top 1 * FROM Contacts");
@@ -34,9 +35,9 @@ function query(){
 
 function queryRaw(){
 
-	var testQuery = "SELECT top 10 * FROM Contacts";
+	var testQuery = "SELECT top 10 * FROM Contacts where Id > ? and Id < ? ";
 
-	sql.queryRaw(connectionString, testQuery, function(err, result) {
+	sql.queryRaw(connectionString, testQuery, [100, 200], function(err, result) {
 		console.log(result);
 	});
 }
