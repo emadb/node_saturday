@@ -3,25 +3,42 @@ var sql = require('msnodesql');
 var connectionString = "Driver={SQL Server Native Client 11.0};Server=127.0.0.1;Database=SaturdayDb;Uid=sa;Pwd=CodicePlastico";;
 
 //stream();
-queryRaw();
+//queryRaw();
 //query();
 
+withTransaction();
+
+function withTransaction(){
+    sql.open(connectionString, function( err, conn ) { 
+        conn.beginTransaction(function(err){
+            try{
+                conn.queryRaw( "INSERT INTO Contacts (Name, Email) VALUES ('Anne', 'anne@sqlsaturday.com')", function( err, results ) { 
+                        console.log(results);
+                    });
+                conn.commit();
+            } catch(e) {
+                conn.rollback();
+            }
+            
+        });
+    });
+}
 
 function stream(){
 	var stmt = sql.query(connectionString, "SELECT top 1 * FROM Contacts");
     // meta contains an array of object (one per column):
     // name, size, nullable, type, sqlType
-    stmt.on('meta', function (meta) { console.log("We've received the metadata", meta); });
+    //stmt.on('meta', function (meta) { console.log("We've received the metadata", meta); });
     // idx is the index
-	stmt.on('row', function (idx) { console.log("We've started receiving a row:" + idx); });
+	//stmt.on('row', function (idx) { console.log("We've started receiving a row:" + idx); });
     // for each column: index of the column e value
-	stmt.on('column', function (idx, data, more) { console.log(idx + ":" + data);});
+	stmt.on('column', function (idx, data, more) { console.log(idx + ":" + data); console.log('more:' + more)});
     
     // done
-	stmt.on('done', function () { console.log("All done!"); });
+	//stmt.on('done', function () { console.log("All done!"); });
     
     // in case of error
-	stmt.on('error', function (err) { console.log("We had an error :-( " + err); });
+	//stmt.on('error', function (err) { console.log("We had an error :-( " + err); });
 }
 
 function query(){
