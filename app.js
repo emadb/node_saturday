@@ -11,14 +11,13 @@ withTransaction();
 function withTransaction(){
     sql.open(connectionString, function( err, conn ) { 
         conn.beginTransaction(function(err){
-            try{
-                conn.queryRaw( "INSERT INTO Contacts (Name, Email) VALUES ('Anne', 'anne@sqlsaturday.com')", function( err, results ) { 
-                        console.log(results);
-                    });
-                conn.commit();
-            } catch(e) {
-                conn.rollback();
-            }
+        
+            var query = conn.query("INSERT INTO Contacts (Namse, Email) VALUES ('Anne', 'anne@sqlsaturday.com')", function( err, results ) { 
+                    // do something
+                    conn.commit();
+                });
+
+            query.on('error', function(){conn.rollback();})
             
         });
     });
